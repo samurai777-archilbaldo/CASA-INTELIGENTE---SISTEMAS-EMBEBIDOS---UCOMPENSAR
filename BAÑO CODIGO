@@ -1,0 +1,272 @@
+#include Wire.h
+#include Adafruit_GFX.h
+#include Adafruit_SSD1306.h
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+ LEDs
+const int ROJO = 8;
+const int AZUL = 9;
+const int VERDE = 10;
+
+String comando = ;
+
+ =========================
+ FUNCION CENTRAR TEXTO
+ =========================
+
+void textoCentrado(String texto, int y, int size) {
+
+  int16_t x1, y1;
+  uint16_t w, h;
+
+  display.setTextSize(size);
+
+  display.getTextBounds(texto, 0, y, &x1, &y1, &w, &h);
+
+  int x = (128 - w)  2;
+
+  display.setCursor(x, y);
+
+  display.println(texto);
+
+}
+
+void setup() {
+
+  Serial.begin(9600);
+
+   LEDs
+  pinMode(ROJO, OUTPUT);
+  pinMode(AZUL, OUTPUT);
+  pinMode(VERDE, OUTPUT);
+
+  apagarTodo();
+
+   OLED
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+
+    Serial.println(OLED no encontrada);
+
+    while (true);
+
+  }
+
+  pantallaInicio();
+
+}
+
+void loop() {
+
+  if (Serial.available()) {
+
+    comando = Serial.readStringUntil('n');
+
+    comando.trim();
+
+    Serial.println(Comando recibido  + comando);
+
+     SPA
+    if (comando == spa) {
+
+      modoSpa();
+
+    }
+
+     MANANA
+    else if (comando == manana) {
+
+      modoManana();
+
+    }
+
+     NOCHE
+    else if (comando == noche) {
+
+      modoNoche();
+
+    }
+
+     APAGAR
+    else if (comando == off) {
+
+      apagarTodo();
+
+      pantallaApagado();
+
+    }
+
+  }
+
+}
+
+ =========================
+ LEDS
+ =========================
+
+void apagarTodo() {
+
+  digitalWrite(ROJO, LOW);
+  digitalWrite(AZUL, LOW);
+  digitalWrite(VERDE, LOW);
+
+}
+
+void modoSpa() {
+
+  apagarTodo();
+
+  digitalWrite(ROJO, HIGH);
+
+  pantallaSpa();
+
+}
+
+void modoManana() {
+
+  apagarTodo();
+
+  digitalWrite(AZUL, HIGH);
+
+  pantallaManana();
+
+}
+
+void modoNoche() {
+
+  apagarTodo();
+
+  digitalWrite(VERDE, HIGH);
+
+  pantallaNoche();
+
+}
+
+ =========================
+ PANTALLA INICIO
+ =========================
+
+void pantallaInicio() {
+
+  display.clearDisplay();
+
+  display.setTextColor(WHITE);
+
+  textoCentrado(BANO, 10, 2);
+
+  textoCentrado(INTELIGENTE, 35, 1);
+
+  display.drawLine(20, 55, 108, 55, WHITE);
+
+  display.display();
+
+  delay(2500);
+
+}
+
+ =========================
+ SPA
+ =========================
+
+void pantallaSpa() {
+
+  display.clearDisplay();
+
+  display.setTextColor(WHITE);
+
+  textoCentrado(SPA, 0, 1);
+
+   Circulo
+  display.drawCircle(64, 35, 18, WHITE);
+
+   Vapor
+  display.drawLine(58, 28, 58, 45, WHITE);
+  display.drawLine(64, 24, 64, 45, WHITE);
+  display.drawLine(70, 28, 70, 45, WHITE);
+
+  textoCentrado(RELAX, 54, 1);
+
+  display.display();
+
+}
+
+ =========================
+ MANANA
+ =========================
+
+void pantallaManana() {
+
+  display.clearDisplay();
+
+  display.setTextColor(WHITE);
+
+  textoCentrado(MANANA, 0, 1);
+
+   SOL
+  display.drawCircle(64, 32, 12, WHITE);
+
+  display.drawLine(64, 10, 64, 18, WHITE);
+  display.drawLine(64, 46, 64, 54, WHITE);
+
+  display.drawLine(42, 32, 50, 32, WHITE);
+  display.drawLine(78, 32, 86, 32, WHITE);
+
+  display.drawLine(50, 18, 56, 24, WHITE);
+  display.drawLine(72, 40, 78, 46, WHITE);
+
+  display.drawLine(72, 24, 78, 18, WHITE);
+  display.drawLine(50, 46, 56, 40, WHITE);
+
+  textoCentrado(ENERGIA, 54, 1);
+
+  display.display();
+
+}
+
+ =========================
+ NOCHE
+ =========================
+
+void pantallaNoche() {
+
+  display.clearDisplay();
+
+  display.setTextColor(WHITE);
+
+  textoCentrado(NOCHE, 0, 1);
+
+   LUNA
+  display.fillCircle(64, 32, 16, WHITE);
+  display.fillCircle(70, 28, 16, BLACK);
+
+  textoCentrado(DESCANSO, 54, 1);
+
+  display.display();
+
+}
+
+ =========================
+ APAGADO
+ =========================
+
+void pantallaApagado() {
+
+  display.clearDisplay();
+
+  display.setTextColor(WHITE);
+
+  textoCentrado(SISTEMA, 0, 1);
+
+   POWER
+  display.drawCircle(64, 30, 18, WHITE);
+
+  display.drawLine(64, 12, 64, 30, WHITE);
+
+  textoCentrado(APAGADO, 54, 1);
+
+  display.display();
+
+}
